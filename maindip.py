@@ -23,6 +23,8 @@ class UI(QtWidgets.QMainWindow):
         self.actionOpenImage.triggered.connect(self.openimage)
         self.actionChuong2.triggered.connect(self.chuong2_clicked)
         self.actionChuong3.triggered.connect(self.chuong3_clicked)
+        self.actionChuong4.triggered.connect(self.chuong4_clicked)
+        self.actionChuong5.triggered.connect(self.chuong5_clicked)
 
     def openimage(self):
         self.filename = QFileDialog.getOpenFileName(self, "Choose Image", "","Images File(*.jpg; *.jpeg; *.png);;Python Files (*.py)")
@@ -69,6 +71,42 @@ class UI(QtWidgets.QMainWindow):
 
     def affine(self):
         res = self.bip.affine()
+        self.bindingToLabel(res)
+
+    def avg(self):
+        res = self.bip.avg()
+        self.bindingToLabel(res)
+
+    def gaussian(self):
+        res=self.bip.gaussian()
+        self.bindingToLabel(res)
+
+    def median(self):
+        res = self.bip.median()
+        self.bindingToLabel(res)
+
+    def unMark(self):
+        res=self.bip.unMark()
+        self.bindingToLabel(res)
+
+    def laplacian(self):
+        res=self.bip.laplacian()
+        self.bindingToLabel(res)
+
+    def compositeLaplacian(self):
+        res=self.bip.compositeLaplacian()
+        self.bindingToLabel(res)
+
+    def highBoost(self):
+        res=self.bip.highBoost()
+        self.bindingToLabel(res)
+
+    def fourier(self):
+        res=self.bip.fourier()
+        self.bindingToLabel(res)
+
+    def highPass(self):
+        res=self.bip.highPassFilter()
         self.bindingToLabel(res)
 
     def chuong2_clicked(self):
@@ -118,6 +156,48 @@ class UI(QtWidgets.QMainWindow):
         self.toolbar.addAction(actionLog)
         self.toolbar.addAction(actionExponential)
 
+    def chuong4_clicked(self):
+        actionAverageFilter = QAction('Averager', self)
+        actionAverageFilter.triggered.connect(self.avg)
+
+        actionGaussianFilter = QAction('Gaussian', self)
+        actionGaussianFilter.triggered.connect(self.gaussian)
+
+        actionMedianFilter = QAction('Median', self)
+        actionMedianFilter.triggered.connect(self.median)
+
+        actionUnSharp = QAction('Unsharp', self)
+        actionUnSharp.triggered.connect(self.unMark)
+
+        actionLaplacian = QAction('Laplacian', self)
+        actionLaplacian.triggered.connect(self.laplacian)
+
+        actionCLaplacian = QAction('Composite Laplacian', self)
+        actionCLaplacian.triggered.connect(self.compositeLaplacian)
+
+        actionHighBoost=QAction('High-Boost',self)
+        actionHighBoost.triggered.connect(self.highBoost)
+
+        self.toolbar = self.addToolBar('Chương 4')
+        self.toolbar.addAction(actionAverageFilter)
+        self.toolbar.addAction(actionGaussianFilter)
+        self.toolbar.addAction(actionMedianFilter)
+        self.toolbar.addAction(actionUnSharp)
+        self.toolbar.addAction(actionLaplacian)
+        self.toolbar.addAction(actionCLaplacian)
+        self.toolbar.addAction(actionHighBoost)
+
+    #Chương 5
+    def chuong5_clicked(self):
+        actionFourier = QAction('Fourier', self)
+        actionFourier.triggered.connect(self.fourier)
+
+        actionHighPass = QAction('High-Pass Filter', self)
+        actionHighPass.triggered.connect(self.highPass)
+
+        self.toolbar = self.addToolBar('Chương 5')
+        self.toolbar.addAction(actionFourier)
+        self.toolbar.addAction(actionHighPass)
     #def test(self):
 
 
