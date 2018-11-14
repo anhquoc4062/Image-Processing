@@ -83,6 +83,8 @@
     <addaction name="actionChuong3"/>
     <addaction name="actionChuong4"/>
     <addaction name="actionChuong5"/>
+    <addaction name="actionChuong7"/>
+    <addaction name="actionChuong8"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuProcess"/>
@@ -133,6 +135,16 @@
   <action name="actionChuong5">
    <property name="text">
     <string>Chương 5</string>
+   </property>
+  </action>
+  <action name="actionChuong7">
+   <property name="text">
+    <string>Chương 7</string>
+   </property>
+  </action>
+  <action name="actionChuong8">
+   <property name="text">
+    <string>Chương 8</string>
    </property>
   </action>
  </widget>
