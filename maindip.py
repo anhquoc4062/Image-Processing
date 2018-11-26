@@ -2,7 +2,7 @@ import sys
 import cv2 as cv
 
 from PyQt5 import uic, QtWidgets, QtCore
-from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow, QFileDialog, QAction
+from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow, QFileDialog, QAction, QMessageBox
 from PyQt5.QtGui import QPixmap, QImage, QIcon
 
 from basicdip import BasicImageProcessing as BIP
@@ -18,6 +18,10 @@ class UI(QtWidgets.QMainWindow):
         self.show()
         self.Init()
         self.bip = ""
+        self.toolbar = False
+        self.img_exist = False
+        self.x_current = 0
+        self.y_current = 0
         #self.test()
 
     def Init(self):
@@ -30,14 +34,37 @@ class UI(QtWidgets.QMainWindow):
         self.actionChuong7.triggered.connect(self.chuong7_clicked)
         self.actionChuong8.triggered.connect(self.chuong8_clicked)
 
+        #bắt sự kiện các input
+        #chương 2
+        self.rotation_inp.valueChanged.connect(self.rotation)
+        self.scaling_inp.valueChanged.connect(self.scaling)
+        self.tranX_inp.valueChanged.connect(self.getTranX)
+        self.tranY_inp.valueChanged.connect(self.getTranY)
+        self.affine_inp.valueChanged.connect(self.affine)
+
+        #Chương 3
+        self.log_inp.valueChanged.connect(self.log)
+
+        #chương 4
+        self.median_inp.valueChanged.connect(self.median)
+        self.gaussian_inp.valueChanged.connect(self.gaussian)
+        self.highboost_inp.valueChanged.connect(self.highBoost)
+        self.average_inp.valueChanged.connect(self.avg)
+
+    def test(self, m):
+        self.median_val.setText(str(m))
+
     def openimage(self):
         self.filename = QFileDialog.getOpenFileName(self, "Choose Image", "","Images File(*.jpg; *.jpeg; *.png);;Python Files (*.py)")
-        width = self.labelOriginal.width()
-        height = self.labelOriginal.height()
-        self.labelOriginal.setPixmap(QPixmap(self.filename[0]).scaled(width, height))
-        width = self.labelOriginal.width()
-        height = self.labelOriginal.height()
-        self.bip = BIP(self.filename[0], width, height)
+        #print (self.filename[0])
+        if(self.filename[0] != ''):
+            width = self.labelOriginal.width()
+            height = self.labelOriginal.height()
+            self.labelOriginal.setPixmap(QPixmap(self.filename[0]).scaled(width, height))
+            width = self.labelOriginal.width()
+            height = self.labelOriginal.height()
+            self.bip = BIP(self.filename[0], width, height)
+            self.img_exist = True
 
     def bindingToLabel(self, changed_img):
         qformat = QImage.Format_Indexed8
@@ -65,36 +92,57 @@ class UI(QtWidgets.QMainWindow):
         res = self.bip.original()
         self.bindingToLabel(res)
 
-    def log(self):
-        res = self.bip.log()
+    def log(self, m):
+        self.log_val.setText(str(m))
+        res = self.bip.log(m)
         self.bindingToLabel(res)
+
+    def getTranX(self, x):
+        self.tranX_val.setText(str(x))
+        self.translation()
+
+    def getTranY(self, y):
+        self.tranY_val.setText(str(y))
+        self.translation()
 
     def translation(self):
-        res = self.bip.translation()
+        x = int(self.tranX_val.text())
+        y = int(self.tranY_val.text())
+        print (type(x))
+        res = self.bip.translation(x, y)
         self.bindingToLabel(res)
 
-    def scaling(self):
-        res = self.bip.scaling()
+    def scaling(self, size):
+        res = self.bip.scaling(size)
+        self.scaling_val.setText(str(size) + "%")
         self.bindingToLabel(res)
 
-    def rotation(self):
-        res = self.bip.rotation()
+    def rotation(self, angle):
+        self.rotation_val.setText(str(angle)+"°")
+        res = self.bip.rotation(angle)
         self.bindingToLabel(res)
 
-    def affine(self):
-        res = self.bip.affine()
+    def affine(self, m):
+        self.affine_val.setText(str(m))
+        res = self.bip.affine(m)
         self.bindingToLabel(res)
 
-    def avg(self):
-        res = self.bip.avg()
+    def avg(self, m):
+        self.average_val.setText(str(m * 2 - 1))
+        size = int(self.average_val.text())
+        res = self.bip.avg(size)
         self.bindingToLabel(res)
 
-    def gaussian(self):
-        res=self.bip.gaussian()
+    def gaussian(self, m):
+        self.gaussian_val.setText(str(m * 2 - 1))
+        size = int(self.gaussian_val.text())
+        res = self.bip.gaussian(size)
         self.bindingToLabel(res)
 
-    def median(self):
-        res = self.bip.median()
+    def median(self, m):
+        self.median_val.setText(str(m*2-1))
+        size = int(self.median_val.text())
+        res = self.bip.median(size)
         self.bindingToLabel(res)
 
     def unMark(self):
@@ -109,8 +157,12 @@ class UI(QtWidgets.QMainWindow):
         res=self.bip.compositeLaplacian()
         self.bindingToLabel(res)
 
-    def highBoost(self):
-        res=self.bip.highBoost()
+    def highBoost(self, m):
+        self.highboost_val.setText(str(m))
+        A = int(self.highboost_val.text())
+        print (A)
+        print (A*1.0)
+        res = self.bip.highBoost(A*1.0)
         self.bindingToLabel(res)
 
     def fourier(self):
@@ -161,85 +213,114 @@ class UI(QtWidgets.QMainWindow):
 
     #triggered event
     def chuong2_clicked(self):
+        if(self.img_exist == True):
+            # if(self.toolbar == False):
+            #     print ("THANH")
+            #     self.toolbar = self.addToolBar('Toolbar')
+            # else:
+            #     self.toolbar.clear()
+            # actionTranslation = QAction(QIcon('images/icon/transition.png'), 'Translation', self)
+            # actionTranslation.triggered.connect(self.translation)
+            #
+            # actionScaling = QAction(QIcon('images/icon/scaling.png'), 'Scaling', self)
+            # actionScaling.triggered.connect(self.scaling)
+            #
+            # actionRotation = QAction(QIcon('images/icon/rotate.png'), 'Rotation', self)
+            # actionRotation.triggered.connect(self.rotation)
+            #
+            # actionAffine = QAction(QIcon('images/icon/affine.png'), 'Affine', self)
+            # actionAffine.triggered.connect(self.affine)
+            #
+            # self.toolbar.addAction(actionTranslation)
+            # self.toolbar.addAction(actionScaling)
+            # self.toolbar.addAction(actionRotation)
+            # self.toolbar.addAction(actionAffine)
 
-        actionTranslation = QAction(QIcon('images/icon/transition.png'), 'Translation', self)
-        actionTranslation.triggered.connect(self.translation)
+            self.chuong2Group.setEnabled(True)
+        else:
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
-        actionScaling = QAction(QIcon('images/icon/scaling.png'), 'Scaling', self)
-        actionScaling.triggered.connect(self.scaling)
-
-        actionRotation = QAction(QIcon('images/icon/rotate.png'), 'Rotation', self)
-        actionRotation.triggered.connect(self.rotation)
-
-        actionAffine = QAction(QIcon('images/icon/affine.png'), 'Affine', self)
-        actionAffine.triggered.connect(self.affine)
-
-        self.toolbar = self.addToolBar('Chương 2')
-        self.toolbar.addAction(actionTranslation)
-        self.toolbar.addAction(actionScaling)
-        self.toolbar.addAction(actionRotation)
-        self.toolbar.addAction(actionAffine)
 
     def chuong3_clicked(self):
-
-        actionOriginal = QAction('Original', self)
-        actionOriginal.triggered.connect(self.orignal)
-
-
-        actionNegative = QAction('Negative', self)
-        actionNegative.triggered.connect(self.negative)
-
-
-        actionHistogram = QAction('Histogram', self)
-        actionHistogram.triggered.connect(self.histogram)
+        if (self.img_exist == True):
+            if (self.toolbar == False):
+                self.toolbar = self.addToolBar('Toolbar')
+            else:
+                self.toolbar.clear()
+            actionOriginal = QAction('Original', self)
+            actionOriginal.triggered.connect(self.orignal)
 
 
-        actionLog = QAction('Log', self)
-        actionLog.triggered.connect(self.log)
+            actionNegative = QAction('Negative', self)
+            actionNegative.triggered.connect(self.negative)
 
-        actionExponential = QAction('Exponential', self)
-        actionExponential.triggered.connect(self.orignal)
 
-        self.toolbar = self.addToolBar('Chương 3')
-        self.toolbar.addAction(actionOriginal)
-        self.toolbar.addAction(actionNegative)
-        self.toolbar.addAction(actionHistogram)
-        self.toolbar.addAction(actionLog)
-        self.toolbar.addAction(actionExponential)
+            actionHistogram = QAction('Histogram', self)
+            actionHistogram.triggered.connect(self.histogram)
+
+            actionLog = QAction('Log', self)
+            actionLog.triggered.connect(self.log)
+
+            actionExponential = QAction('Exponential', self)
+            actionExponential.triggered.connect(self.orignal)
+
+            self.toolbar.clear()
+            self.toolbar.addAction(actionOriginal)
+            self.toolbar.addAction(actionNegative)
+            self.toolbar.addAction(actionHistogram)
+            self.toolbar.addAction(actionLog)
+            self.toolbar.addAction(actionExponential)
+            self.chuong3Group.setEnabled(True)
+        else:
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
     def chuong4_clicked(self):
-        actionAverageFilter = QAction('Averager', self)
-        actionAverageFilter.triggered.connect(self.avg)
+        if (self.img_exist == True):
 
-        actionGaussianFilter = QAction('Gaussian', self)
-        actionGaussianFilter.triggered.connect(self.gaussian)
+            if (self.toolbar == False):
+                self.toolbar = self.addToolBar('Toolbar')
+            else:
+                self.toolbar.clear()
+            #actionAverageFilter = QAction('Averager', self)
+            #actionAverageFilter.triggered.connect(self.avg)
 
-        actionMedianFilter = QAction('Median', self)
-        actionMedianFilter.triggered.connect(self.median)
+            #actionGaussianFilter = QAction('Gaussian', self)
+            #actionGaussianFilter.triggered.connect(self.gaussian)
 
-        actionUnSharp = QAction('Unsharp', self)
-        actionUnSharp.triggered.connect(self.unMark)
+            #actionMedianFilter = QAction('Median', self)
+            #actionMedianFilter.triggered.connect(self.median)
 
-        actionLaplacian = QAction('Laplacian', self)
-        actionLaplacian.triggered.connect(self.laplacian)
+            actionUnSharp = QAction('Unsharp', self)
+            actionUnSharp.triggered.connect(self.unMark)
 
-        actionCLaplacian = QAction('Composite Laplacian', self)
-        actionCLaplacian.triggered.connect(self.compositeLaplacian)
+            actionLaplacian = QAction('Laplacian', self)
+            actionLaplacian.triggered.connect(self.laplacian)
 
-        actionHighBoost=QAction('High-Boost',self)
-        actionHighBoost.triggered.connect(self.highBoost)
+            actionCLaplacian = QAction('Composite Laplacian', self)
+            actionCLaplacian.triggered.connect(self.compositeLaplacian)
 
-        self.toolbar = self.addToolBar('Chương 4')
-        self.toolbar.addAction(actionAverageFilter)
-        self.toolbar.addAction(actionGaussianFilter)
-        self.toolbar.addAction(actionMedianFilter)
-        self.toolbar.addAction(actionUnSharp)
-        self.toolbar.addAction(actionLaplacian)
-        self.toolbar.addAction(actionCLaplacian)
-        self.toolbar.addAction(actionHighBoost)
+            #actionHighBoost=QAction('High-Boost',self)
+            #actionHighBoost.triggered.connect(self.highBoost)
+
+            #self.toolbar.addAction(actionAverageFilter)
+            #self.toolbar.addAction(actionGaussianFilter)
+            #self.toolbar.addAction(actionMedianFilter)
+            self.toolbar.addAction(actionUnSharp)
+            self.toolbar.addAction(actionLaplacian)
+            self.toolbar.addAction(actionCLaplacian)
+            #self.toolbar.addAction(actionHighBoost)
+
+            self.chuong4Group.setEnabled(True)
+
+        else:
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
     #Chương 5
     def chuong5_clicked(self):
+        if (self.toolbar == False):
+            self.toolbar = self.addToolBar('Toolbar')
+        else:
+            self.toolbar.clear()
         actionFourier = QAction('Fourier', self)
         actionFourier.triggered.connect(self.fourier)
 
@@ -249,7 +330,6 @@ class UI(QtWidgets.QMainWindow):
         actionCanny = QAction('Canny', self)
         actionCanny.triggered.connect(self.canny)
 
-        self.toolbar = self.addToolBar('Chương 5')
         self.toolbar.addAction(actionFourier)
         self.toolbar.addAction(actionHighPass)
         self.toolbar.addAction(actionCanny)
@@ -257,7 +337,10 @@ class UI(QtWidgets.QMainWindow):
 
     #chương 7
     def chuong7_clicked(self):
-        self.toolbar = self.addToolBar('Chương 7')
+        if (self.toolbar == False):
+            self.toolbar = self.addToolBar('Toolbar')
+        else:
+            self.toolbar.clear()
 
         actionDilate = QAction('Dilate', self)
         actionDilate.triggered.connect(self.dilate)
@@ -288,7 +371,10 @@ class UI(QtWidgets.QMainWindow):
         self.toolbar.addAction(actionConvex)
 
     def chuong8_clicked(self):
-        self.toolbar = self.addToolBar('Chương 8')
+        if (self.toolbar == False):
+            self.toolbar = self.addToolBar('Toolbar')
+        else:
+            self.toolbar.clear()
 
         actionSobelX = QAction('SobelX', self)
         actionSobelX.triggered.connect(self.sobelx)

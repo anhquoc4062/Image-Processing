@@ -28,34 +28,32 @@ class BasicImageProcessing():
         res = cv.cvtColor(img_yuv, cv.COLOR_YUV2RGB)
         return res
 
-    def log(self):
-        res_1 = np.uint8(np.log1p(self.img))
-        normalized_image = cv.normalize(res_1, None, 0, 255, cv.NORM_MINMAX, dtype=cv.CV_8U)
-        thresh = 1
-        res_2 = cv.threshold(normalized_image, thresh, 255, cv.THRESH_BINARY)[1]
+    def log(self, thresh):
+        res_1 = np.uint8(np.log(self.img))
+        res_2 = cv.threshold(res_1, thresh, 255, cv.THRESH_BINARY)[1]
         return res_2
 
     #chuong 2
-    def scaling(self):
-        res = cv.resize(self.img, None, fx = 1.5, fy = 1.5, interpolation = cv.INTER_CUBIC)
+    def scaling(self, size):
+        res = cv.resize(self.img, None, fx = size*0.01, fy = size*0.01, interpolation = cv.INTER_CUBIC)
         return res
 
-    def translation(self):
+    def translation(self, x, y):
         rows, cols, steps = self.img.shape
-        M = np.float32([[1, 0, 100], [0, 1, 50]])
+        M = np.float32([[1, 0, x], [0, 1, y]])
         res = cv.warpAffine(self.img, M, (cols, rows))
         return res
 
-    def rotation(self):
+    def rotation(self, angle):
         rows, cols,  steps = self.img.shape
-        M = cv.getRotationMatrix2D((cols / 2, rows / 2), 90, 1)
+        M = cv.getRotationMatrix2D((cols / 2, rows / 2), 360 - angle, 1)
         res = cv.warpAffine(self.img, M, (cols, rows))
         return res
 
-    def affine(self):
+    def affine(self, m):
         rows, cols, ch = self.img.shape
 
-        pts1 = np.float32([[50, 50], [200, 50], [50, 200]])
+        pts1 = np.float32([[50, m], [200, 50], [50, 200]])
         pts2 = np.float32([[10, 100], [200, 50], [100, 250]])
 
         M = cv.getAffineTransform(pts1, pts2)
@@ -65,20 +63,21 @@ class BasicImageProcessing():
 
     #Chương 3
 
-    def avg(self):
-        res=cv.blur(self.img,(5,5))
+    def avg(self, m):
+        res=cv.blur(self.img,(m,m))
         return res
-    def gaussian(self):
-        res = cv.GaussianBlur(self.img,(5,5),0)
+    def gaussian(self, m):
+        res = cv.GaussianBlur(self.img,(m, m),0)
         return res
-    def median(self):
-        res = cv.medianBlur(self.img, 5)
+    def median(self, size):
+        res = cv.medianBlur(self.img, size)
         return res
     def unMark(self):
-
+        tmp=self.img
         #image=self.img
-        gaussian= cv.GaussianBlur(self.img, (9, 9), 10.0)
-        res = cv.addWeighted(self.img, 1.5, gaussian, -0.5, 0, self.img)
+        gaussian= cv.GaussianBlur(tmp, (9, 9), 10.0)
+
+        res = cv.addWeighted(tmp, 1.5, gaussian, -0.5, 0.5,tmp)
         #res = cv.addWeighted(self.img, 1.5, gaussian_3, -0.5, 0, self.img)
         return res
     def laplacian(self):
@@ -114,9 +113,8 @@ class BasicImageProcessing():
         res = (res * 255).astype(np.uint8)
         return res
 
-    def highBoost(self):
+    def highBoost(self, A):
         image = self.img
-        A=8.0
         sharpeningKernel = np.zeros((3, 3), np.float32)
         sharpeningKernel[0, 0] = -1.0
         sharpeningKernel[0, 1] = -1.0
