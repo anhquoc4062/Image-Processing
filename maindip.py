@@ -66,30 +66,46 @@ class UI(QtWidgets.QMainWindow):
         self.median_val.setText(str(m))
 
     def groupBox2Enable(self):
-        if self.chuong2Check.isChecked():
-            self.chuong2Group.setEnabled(True)
-            self.scaling_inp.setEnabled(True)
-            self.scaling_val.setEnabled(True)
+        if (self.img_exist == True):
+            if self.chuong2Check.isChecked():
+                self.chuong2Group.setEnabled(True)
+                self.scaling_inp.setEnabled(True)
+                self.scaling_val.setEnabled(True)
+            else:
+                self.chuong2Group.setEnabled(False)
         else:
-            self.chuong2Group.setEnabled(False)
+            self.chuong2Check.setChecked(False)
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
     def groupBox3Enable(self):
-        if self.chuong3Check.isChecked():
-            self.chuong3Group.setEnabled(True)
+        if (self.img_exist == True):
+            if self.chuong3Check.isChecked():
+                self.chuong3Group.setEnabled(True)
+            else:
+                self.chuong3Group.setEnabled(False)
         else:
-            self.chuong3Group.setEnabled(False)
+            self.chuong3Check.setChecked(False)
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
     def groupBox4Enable(self):
-        if self.chuong4Check.isChecked():
-            self.chuong4Group.setEnabled(True)
+        if (self.img_exist == True):
+            if self.chuong4Check.isChecked():
+                self.chuong4Group.setEnabled(True)
+            else:
+                self.chuong4Group.setEnabled(False)
         else:
-            self.chuong4Group.setEnabled(False)
+            self.chuong4Check.setChecked(False)
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
     def groupBox7Enable(self):
-        if self.chuong7Check.isChecked():
-            self.chuong7Group.setEnabled(True)
+        if (self.img_exist == True):
+            if self.chuong7Check.isChecked():
+                self.chuong7Group.setEnabled(True)
+            else:
+                self.chuong7Group.setEnabled(False)
         else:
-            self.chuong7Group.setEnabled(False)
+            self.chuong7Check.setChecked(False)
+            QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
     def openimage(self):
         self.filename = QFileDialog.getOpenFileName(self, "Choose Image", "","Images File(*.jpg; *.jpeg; *.png);;Python Files (*.py)")
@@ -98,6 +114,7 @@ class UI(QtWidgets.QMainWindow):
             width = self.labelOriginal.width()
             height = self.labelOriginal.height()
             self.labelOriginal.setPixmap(QPixmap(self.filename[0]).scaled(width, height))
+            self.labelChanged.setPixmap(QPixmap(self.filename[0]).scaled(width, height))
             width = self.labelOriginal.width()
             height = self.labelOriginal.height()
             self.bip = BIP(self.filename[0], width, height)
@@ -258,15 +275,15 @@ class UI(QtWidgets.QMainWindow):
                 self.toolbar = self.addToolBar('Toolbar')
             else:
                 self.toolbar.clear()
-            actionOriginal = QAction('Original', self)
+            actionOriginal = QAction(QIcon('images/icon/original.png'), 'Original', self)
             actionOriginal.triggered.connect(self.orignal)
 
 
-            actionNegative = QAction('Negative', self)
+            actionNegative = QAction(QIcon('images/icon/negative.png'), 'Negative', self)
             actionNegative.triggered.connect(self.negative)
 
 
-            actionHistogram = QAction('Histogram', self)
+            actionHistogram = QAction(QIcon('images/icon/histogram.png'), 'Histogram', self)
             actionHistogram.triggered.connect(self.histogram)
 
             self.toolbar.clear()
@@ -284,16 +301,8 @@ class UI(QtWidgets.QMainWindow):
                 self.toolbar = self.addToolBar('Toolbar')
             else:
                 self.toolbar.clear()
-            #actionAverageFilter = QAction('Averager', self)
-            #actionAverageFilter.triggered.connect(self.avg)
 
-            #actionGaussianFilter = QAction('Gaussian', self)
-            #actionGaussianFilter.triggered.connect(self.gaussian)
-
-            #actionMedianFilter = QAction('Median', self)
-            #actionMedianFilter.triggered.connect(self.median)
-
-            actionUnSharp = QAction('Unsharp', self)
+            actionUnSharp = QAction(QIcon('images/icon/unsharp.png'), 'Unsharp', self)
             actionUnSharp.triggered.connect(self.unMark)
 
             actionLaplacian = QAction('Laplacian', self)
@@ -301,17 +310,9 @@ class UI(QtWidgets.QMainWindow):
 
             actionCLaplacian = QAction('Composite Laplacian', self)
             actionCLaplacian.triggered.connect(self.compositeLaplacian)
-
-            #actionHighBoost=QAction('High-Boost',self)
-            #actionHighBoost.triggered.connect(self.highBoost)
-
-            #self.toolbar.addAction(actionAverageFilter)
-            #self.toolbar.addAction(actionGaussianFilter)
-            #self.toolbar.addAction(actionMedianFilter)
             self.toolbar.addAction(actionUnSharp)
             self.toolbar.addAction(actionLaplacian)
             self.toolbar.addAction(actionCLaplacian)
-            #self.toolbar.addAction(actionHighBoost)
 
             self.chuong4Group.setEnabled(True)
 
@@ -333,7 +334,6 @@ class UI(QtWidgets.QMainWindow):
 
             self.toolbar.addAction(actionFourier)
             self.toolbar.addAction(actionHighPass)
-        #def test(self):
         else:
             QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")
 
@@ -346,31 +346,23 @@ class UI(QtWidgets.QMainWindow):
             else:
                 self.toolbar.clear()
 
-            # actionDilate = QAction('Dilate', self)
-            # actionDilate.triggered.connect(self.dilate)
-            # self.toolbar.addAction(actionDilate)
-            #
-            # actionErode = QAction('Erode', self)
-            # actionErode.triggered.connect(self.erode)
-            # self.toolbar.addAction(actionErode)
-
-            actionOpen = QAction('Open', self)
+            actionOpen = QAction(QIcon('images/icon/open.png'), 'Open', self)
             actionOpen.triggered.connect(self.open)
             self.toolbar.addAction(actionOpen)
 
-            actionClose = QAction('Close', self)
+            actionClose = QAction(QIcon('images/icon/close.png'), 'Close', self)
             actionClose.triggered.connect(self.close)
             self.toolbar.addAction(actionClose)
 
-            actionGradient = QAction('Gradient', self)
+            actionGradient = QAction(QIcon('images/icon/gradient.png'), 'Gradient', self)
             actionGradient.triggered.connect(self.gradient)
             self.toolbar.addAction(actionGradient)
 
-            actionMorboundary = QAction('Morboundary', self)
+            actionMorboundary = QAction(QIcon('images/icon/morboundary.png'), 'Morboundary', self)
             actionMorboundary.triggered.connect(self.morboundary)
             self.toolbar.addAction(actionMorboundary)
 
-            actionConvex = QAction('Convex', self)
+            actionConvex = QAction(QIcon('images/icon/convex.png'), 'Convex', self)
             actionConvex.triggered.connect(self.convex)
             self.toolbar.addAction(actionConvex)
 
@@ -386,19 +378,19 @@ class UI(QtWidgets.QMainWindow):
             else:
                 self.toolbar.clear()
 
-            actionSobelX = QAction('SobelX', self)
+            actionSobelX = QAction(QIcon('images/icon/sobelx.png'), 'SobelX', self)
             actionSobelX.triggered.connect(self.sobelx)
             self.toolbar.addAction(actionSobelX)
 
-            actionSobelY = QAction('SobelY', self)
+            actionSobelY = QAction(QIcon('images/icon/sobely.png'), 'SobelY', self)
             actionSobelY.triggered.connect(self.sobely)
             self.toolbar.addAction(actionSobelY)
 
-            actionLapcian = QAction('Lapcian', self)
+            actionLapcian = QAction(QIcon('images/icon/laplacian.png'), 'Lapcian', self)
             actionLapcian.triggered.connect(self.lapcian)
             self.toolbar.addAction(actionLapcian)
 
-            actionCanny = QAction('Canny', self)
+            actionCanny = QAction(QIcon('images/icon/canny.png'), 'Canny', self)
             actionCanny.triggered.connect(self.canny)
             self.toolbar.addAction(actionCanny)
         else:

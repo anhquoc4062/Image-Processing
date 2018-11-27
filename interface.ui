@@ -888,31 +888,55 @@
    </property>
   </action>
   <action name="actionChuong3">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/grayscale.png</normaloff>images/icon/grayscale.png</iconset>
+   </property>
    <property name="text">
     <string>Grayscale</string>
    </property>
   </action>
   <action name="actionChuong4">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/spatial.png</normaloff>images/icon/spatial.png</iconset>
+   </property>
    <property name="text">
     <string>Spartial Domain</string>
    </property>
   </action>
   <action name="actionChuong5">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/frequency.png</normaloff>images/icon/frequency.png</iconset>
+   </property>
    <property name="text">
     <string>Frequency Domain</string>
    </property>
   </action>
   <action name="actionChuong7">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/laplacian.png</normaloff>images/icon/laplacian.png</iconset>
+   </property>
    <property name="text">
     <string>Mathematical Morphology</string>
    </property>
   </action>
   <action name="actionChuong8">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/egde.png</normaloff>images/icon/egde.png</iconset>
+   </property>
    <property name="text">
     <string>Edge Detection</string>
    </property>
   </action>
   <action name="actionPrint">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/print.png</normaloff>images/icon/print.png</iconset>
+   </property>
    <property name="text">
     <string>Print...</string>
    </property>
