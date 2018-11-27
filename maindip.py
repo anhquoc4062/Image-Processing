@@ -1,6 +1,6 @@
 import sys
 import cv2 as cv
-import qdarkgraystyle
+import qdarkstyle
 
 from PyQt5 import uic, QtWidgets, QtCore
 from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow, QFileDialog, QAction, QMessageBox
@@ -85,7 +85,8 @@ class UI(QtWidgets.QMainWindow):
         if (q == QMessageBox.Yes):
             cv.imwrite(photoName, img)
             QMessageBox.about(self, "Thông báo", "Lưu ảnh thành công.")
-            
+            #self.close()
+
 
     def groupBox2Enable(self):
         if (self.img_exist == True):
@@ -421,6 +422,7 @@ class UI(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     a = QtWidgets.QApplication(sys.argv)
+    a.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     win = UI()
     sys.exit(a.exec_())
 
