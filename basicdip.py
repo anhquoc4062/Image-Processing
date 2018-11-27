@@ -33,6 +33,21 @@ class BasicImageProcessing():
         res_2 = cv.threshold(res_1, thresh, 255, cv.THRESH_BINARY)[1]
         return res_2
 
+    # def gamma(self, m):
+    #     gamma = [m]
+    #     for i in range(len(gamma)):
+    #         self.img = 1 * (self.img + 1) ** gamma[i]
+
+    def gamma(self, gamma):
+        # build a lookup table mapping the pixel values [0, 255] to
+        # their adjusted gamma values\
+        invGamma = 1.0 / gamma
+        table = np.array([((i / 255.0) ** invGamma) * 255
+                          for i in np.arange(0, 256)]).astype("uint8")
+
+        # apply gamma correction using the lookup table
+        return cv.LUT(self.img, table)
+
     #chuong 2
     def scaling(self, size):
         res = cv.resize(self.img, None, fx = size*0.01, fy = size*0.01, interpolation = cv.INTER_CUBIC)
@@ -162,14 +177,13 @@ class BasicImageProcessing():
         return res
 
     #chương 7
-    def dilate(self):
-        kernel = np.ones((2, 6), np.uint8)
-        res = cv.dilate(self.img, kernel, iterations=1)
-        return res
-
-    def erode(self):
-        kernel = np.ones((4, 7), np.uint8)
-        res = cv.erode(self.img, kernel, iterations=1)
+    def morphology(self, m):
+        if m > 0:
+            kernel = np.ones((2, 6), np.uint8)
+            res = cv.dilate(self.img, kernel, iterations=m)
+        else:
+            kernel = np.ones((4, 7), np.uint8)
+            res = cv.erode(self.img, kernel, iterations=m*-1)
         return res
 
     def open(self):
@@ -200,8 +214,9 @@ class BasicImageProcessing():
         return res
 
     def convex(self):
-        self.img = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        blur = cv.blur(self.img, (3, 3))
+        tmp = self.img
+        image = cv.cvtColor(tmp, cv.COLOR_BGR2GRAY)
+        blur = cv.blur(image, (3, 3))
         ret, thresh = cv.threshold(blur, 50, 255, cv.THRESH_BINARY)
 
         im2, contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
