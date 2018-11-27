@@ -356,7 +356,7 @@ class UI(QtWidgets.QMainWindow):
             actionHighPass = QAction('High-Pass Filter', self)
             actionHighPass.triggered.connect(self.highPass)
 
-            self.toolbar.addAction(actionFourier)
+            #self.toolbar.addAction(actionFourier)
             self.toolbar.addAction(actionHighPass)
         else:
             QMessageBox.about(self, "Thông Báo", "Chưa chọn hình ?!!")

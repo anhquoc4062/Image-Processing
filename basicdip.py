@@ -16,6 +16,8 @@ class BasicImageProcessing():
 
     #chuong 3
     def original(self):
+        self.img=cv.imread(self.filename)
+        self.img = cv.resize(self.img, (self.width, self.height))
         return self.img
 
     def negative(self):
