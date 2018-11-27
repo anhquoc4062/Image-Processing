@@ -840,6 +840,7 @@
     </property>
     <addaction name="actionOpenImage"/>
     <addaction name="actionPrint"/>
+    <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menuProcess">
     <property name="title">
@@ -939,6 +940,15 @@
    </property>
    <property name="text">
     <string>Print...</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/icon/save.png</normaloff>images/icon/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
    </property>
   </action>
  </widget>

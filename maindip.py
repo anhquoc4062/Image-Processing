@@ -23,6 +23,8 @@ class UI(QtWidgets.QMainWindow):
         self.img_exist = False
         self.x_current = 0
         self.y_current = 0
+        self.setWindowIcon(QIcon("images/icon/mainicon.png"))
+        self.curImg = False
         #self.test()
 
     def Init(self):
@@ -33,6 +35,7 @@ class UI(QtWidgets.QMainWindow):
         self.actionChuong5.triggered.connect(self.chuong5_clicked)
         self.actionChuong7.triggered.connect(self.chuong7_clicked)
         self.actionChuong8.triggered.connect(self.chuong8_clicked)
+        self.actionSave.triggered.connect(self.saveImg)
 
         #bắt sự kiện các input
         #chương 2
@@ -64,6 +67,25 @@ class UI(QtWidgets.QMainWindow):
 
     def test(self, m):
         self.median_val.setText(str(m))
+
+    def saveImg(self):
+        img = self.curImg
+        # size đến tên hình =36
+        s = self.filename[0]
+        print(s)
+        photoName = ""
+        for i in range(len(s) - 1, 0, -1):
+            if s[i] == '/':
+                photoName = s[i + 1:len(s) - 4]
+                photoName = photoName + "_Changed" + s[len(s) - 4:]
+                break
+
+        q = QMessageBox.question(self, "Xác nhận", "Lưu ảnh hiện tại?", QMessageBox.Yes | QMessageBox.No,
+                                 QMessageBox.No)
+        if (q == QMessageBox.Yes):
+            cv.imwrite(photoName, img)
+            QMessageBox.about(self, "Thông báo", "Lưu ảnh thành công.")
+            
 
     def groupBox2Enable(self):
         if (self.img_exist == True):
@@ -122,6 +144,7 @@ class UI(QtWidgets.QMainWindow):
 
     def bindingToLabel(self, changed_img):
         qformat = QImage.Format_Indexed8
+        self.curImg=changed_img
 
         if len(changed_img.shape) == 3:
             if (changed_img.shape[2]) == 4:
